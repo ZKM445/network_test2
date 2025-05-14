@@ -95,7 +95,7 @@ d3.csv("Eco_clean.csv").then(data => {
 
     // Step 5: Simulation
     const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(edges).id(d => d.id).distance(800))
+      .force("link", d3.forceLink(edges).id(d => d.id).distance(1300))
       .force("charge", d3.forceManyBody().strength(-300))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .force("collision", d3.forceCollide().radius(100))
