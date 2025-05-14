@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Social Network Analysis</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 240px;
+      background-color: #f8f9fa;
+      border-right: 1px solid #ddd;
+      padding: 1rem;
+      box-sizing: border-box;
+      transition: width 0.3s ease, padding 0.3s ease;
+      position: relative;
+    }
+
+    .sidebar.collapsed {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+      border: none;
+    }
+
+    .main {
+      flex: 1;
+      position: relative;
+    }
+
+    .toggle-btn {
+      position: absolute;
+      top: 15px;
+      left: 0px;
+      z-index: 10;
+      background-color: #16537e;
+      color: white;
+      border: none;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 0 5px 5px 0;
+      transition: left 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar.collapsed ~ .main .toggle-btn {
+      left: 0;
+      border-radius: 5px;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+        background-color: #e0ecf1; 
+    }
+
+    text {
+      font-size: 10px;
+      pointer-events: none;
+    }
+
+    .toggle-icon {
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      margin-top: 1rem;
+    }
+
+    .legend {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <h1>Education Ecosystem (Demo)</h1>
+    <label>
+      <input type="radio" name="viewMode" value="collab" checked>
+      Collaborations
+    </label><br>
+    <label>
+      <input type="radio" name="viewMode" value="theme">
+      Themes
+    </label><br>
+    <select id="categorySelect">
+      <option value="">Select Category</option>
+      <!-- Options will be dynamically added here -->
+    </select>
+
+    <!-- Legend -->
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="main">
+    <button class="toggle-btn" id="toggleBtn">
+      <span class="toggle-icon" id="icon">&larr;</span> Hide
+    </button>
+    <svg></svg>
+  </div>
+
+  <script>
+    const colorScale = d3.scaleOrdinal()
+      .domain([
+        "Health and Education",
+        "NGO",
+        "Union",
+        "Alternative Education",
+        "External Contractor",
+        "Yukon Government",
+        "Post-Secondary Institution",
+        "Yukon FN Entities",
+        "Yukon Government - FNSB"
+      ])
+      .range([
+        "#1f77b4", // Health and Education - blue
+        "#ff7f0e", // NGO - orange
+        "#000", // Union - black
+        "#2ca02c", // Alternative Education - green
+        "#d62728", // External Contractor - red
+        "#9467bd", // Yukon Government - purple
+        "#8c564b", // Post-Secondary Institution - brown
+        "#e377c2", // Yukon FN Entities - pink
+        "#17becf", // Yukon Government - FNSB - cyan
+      ]);
+
+    // Create the legend
+    const legend = document.getElementById("legend");
+colorScale.domain().forEach((category) => {
+      const color = colorScale(category);
+      
+      const legendItem = document.createElement("div");
+      legendItem.className = "legend-item";
+
+      const colorBox = document.createElement("div");
+      colorBox.className = "legend-color";
+      colorBox.style.backgroundColor = color;
+
+      const label = document.createElement("span");
+      label.textContent = category;
+
+      legendItem.appendChild(colorBox);
+      legendItem.appendChild(label);
+      legend.appendChild(legendItem);
+    });
+
+    // Dropdown population (Example)
+    const categorySelect = document.getElementById("categorySelect");
+    colorScale.domain().forEach(category => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category;
+      categorySelect.appendChild(option);
+    });
+
+    // Dropdown color change listener
+    categorySelect.addEventListener("change", (event) => {
+      const selectedCategory = event.target.value;
+      const selectedColor = colorScale(selectedCategory);
+      categorySelect.style.backgroundColor = selectedColor;
+    });
+
+    // Sidebar toggle
+    const sidebar = document.getElementById("sidebar");
+    const toggleBtn = document.getElementById("toggleBtn");
+    toggleBtn.addEventListener("click", () => {
+      const collapsed = sidebar.classList.toggle("collapsed");
+      toggleBtn.innerHTML = collapsed
+        ? '<span class="toggle-icon" id="icon">&rarr;</span> Show'
+        : '<span class="toggle-icon" id="icon">&larr;</span> Hide';
+    });
+  </script>
+
+  <script src="test.js"></script>
+</body>
+</html>
